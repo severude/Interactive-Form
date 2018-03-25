@@ -10,8 +10,6 @@ otherTitle.id = "other-title";
 otherTitle.type = "text";
 otherTitle.placeholder="Your Job Role";
 otherTitle.style.display = "none";
-
-// Attach otherTitle input to the first fieldset
 let fieldSetOne = document.getElementsByTagName('fieldset')[0];
 fieldSetOne.appendChild(otherTitle);
 
@@ -63,6 +61,7 @@ design.addEventListener("change", () => {
 	}
 });
 
+
 // ”Register for Activities” section of the form
 
 // Create a totals element to track cost of activities
@@ -72,7 +71,7 @@ totals.style.display = "none";
 let activities = document.querySelector('.activities');
 activities.appendChild(totals);
 
-// Create an checkboxes array, loop through all the elements, and copy over each checkbox
+// Create a checkboxes array, loop through all the elements, and copy over each checkbox
 let nodes = activities.children;
 let checkboxes = [];
 for(let index = 0; index < nodes.length; index++) {
@@ -92,7 +91,7 @@ function disableCheckBox(value1, value2) {
 	}
 }
 
-// Whenever a change occurs in activities, then check all the input statuses
+// Whenever a change occurs in activities, then check all the checkbox statuses
 activities.addEventListener("change", event => {
 
 	// Check for and disable any activities that overlap
@@ -101,20 +100,20 @@ activities.addEventListener("change", event => {
 	disableCheckBox(2, 4);
 	disableCheckBox(4, 2);
 
-	// Loop through inputs array to calculate the total cost of activities
-	let total = 0;  // Storage for total amount
+	// Loop through checkboxes array to calculate the total cost of activities
+	let total = 0;  // Storage for total cost
 	for(let index = 0; index < checkboxes.length; index++) {
-
+		// For any checkbox that is checked, add to the total
 		if(checkboxes[index].checked) {
 			if(index == 0) {
-				total += 200;  // First activity is 200
+				total += 200;  // First activity is $200
 			} else {
-				total += 100;  // Other activities are 100
+				total += 100;  // All other activities are $100
 			}
 		}
 	}
 	
-	// Show total amount if not zero, otherwise hide the total
+	// Show the total amount or hide the total if zero
 	if(total > 0) {
 		totals.textContent = "Total: $" + total;
 		totals.style.display = "block";
@@ -125,3 +124,37 @@ activities.addEventListener("change", event => {
 
 
 // Payment Info section of the form
+
+// Setup default settings when credit card is selected
+let payment = document.getElementById("payment");
+payment.selectedIndex = 1;
+let creditCard = document.getElementById("credit-card");
+creditCard.style.display = "block";
+let paypal = creditCard.nextElementSibling;
+paypal.style.display = "none";
+let bitcoin = paypal.nextElementSibling;
+bitcoin.style.display = "none";
+
+// Turn on and off payments sections based on the selection
+payment.addEventListener("change", () => {
+	if(payment.value.toLowerCase() == "credit card") {
+		creditCard.style.display = "block";
+		paypal.style.display = "none";
+		bitcoin.style.display = "none";
+	} else if(payment.value.toLowerCase() == "paypal") {
+		creditCard.style.display = "none";
+		paypal.style.display = "block";
+		bitcoin.style.display = "none";
+	} else if(payment.value.toLowerCase() == "bitcoin") {
+		creditCard.style.display = "none";
+		paypal.style.display = "none";
+		bitcoin.style.display = "block";
+	} else {
+		creditCard.style.display = "none";
+		paypal.style.display = "none";
+		bitcoin.style.display = "none";
+	}
+});
+
+
+// Form validation
