@@ -81,7 +81,6 @@ for(let index = 0; index < nodes.length; index++) {
 	}
 }
 
-// Helper function to enable or disable checkboxes
 // If the first checkbox index is checked, then disable the second checkbox
 function disableCheckBox(value1, value2) {
 	if(checkboxes[value1].checked) {
@@ -125,34 +124,33 @@ activities.addEventListener("change", event => {
 
 // Payment Info section of the form
 
-// Setup default settings when credit card is selected
+// Set default selectors
 let payment = document.getElementById("payment");
-payment.selectedIndex = 1;
 let creditCard = document.getElementById("credit-card");
-creditCard.style.display = "block";
-let paypal = creditCard.nextElementSibling;
-paypal.style.display = "none";
-let bitcoin = paypal.nextElementSibling;
-bitcoin.style.display = "none";
+let payPal = creditCard.nextElementSibling;
+let bitCoin = payPal.nextElementSibling;
+
+// Enable and disable payment sections
+function showPaymentInfo(displayCreditCard, displayPayPal, displayBitCoin) {
+	creditCard.style.display = displayCreditCard;
+	payPal.style.display = displayPayPal;
+	bitCoin.style.display = displayBitCoin;
+}
+
+// Default settings for credit card
+payment.selectedIndex = 1;
+showPaymentInfo("block", "none", "none");  
 
 // Turn on and off payments sections based on the selection
 payment.addEventListener("change", () => {
 	if(payment.value.toLowerCase() == "credit card") {
-		creditCard.style.display = "block";
-		paypal.style.display = "none";
-		bitcoin.style.display = "none";
+		showPaymentInfo("block", "none", "none");
 	} else if(payment.value.toLowerCase() == "paypal") {
-		creditCard.style.display = "none";
-		paypal.style.display = "block";
-		bitcoin.style.display = "none";
+		showPaymentInfo("none", "block", "none");
 	} else if(payment.value.toLowerCase() == "bitcoin") {
-		creditCard.style.display = "none";
-		paypal.style.display = "none";
-		bitcoin.style.display = "block";
+		showPaymentInfo("none", "none", "block");
 	} else {
-		creditCard.style.display = "none";
-		paypal.style.display = "none";
-		bitcoin.style.display = "none";
+		showPaymentInfo("none", "none", "none");
 	}
 });
 
