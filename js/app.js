@@ -259,14 +259,18 @@ form.addEventListener("submit", (event) => {
 // Disable default form messages to use custom validation
 form.noValidate = true;
 
+// Colors for error messages
+const noError = "#000";
+const error = "#C21E1E";
+
 // Validation error for name
 function nameValidation() {
 	if(name.validity.valid) {
 	   nameLabel.textContent = "Name:";
-	   nameLabel.style.color = "#000";
+	   nameLabel.style.color = noError;
 	} else {
 	   nameLabel.textContent = "Name: (Please provide your name)";
-	   nameLabel.style.color = "#C21E1E";
+	   nameLabel.style.color = error;
 	}
 }
 
@@ -274,93 +278,57 @@ function nameValidation() {
 function emailValidation() {
 	if(email.validity.valid) {
 	   emailLabel.textContent = "Email:";
-	   emailLabel.style.color = "#000";
+	   emailLabel.style.color = noError;
 	} else {
 	   emailLabel.textContent = "Email: (Please provide a valid email address)";
-	   emailLabel.style.color = "#C21E1E";
+	   emailLabel.style.color = error;
 	}
 }
 
-// Validation error for credit card number
+// Show validation error if credit card number is not valid
 function ccNumValidation() {
-	if(ccNum.validity.valid) {
-	   ccNumLabel.style.color = "#000";
-	} else {
-	   ccNumLabel.style.color = "#C21E1E";
-	}
+	ccNumLabel.style.color = ccNum.validity.valid ? noError : error;
 }
 
-// Validation error for zip code
+// Show validation error if zip code is not valid
 function zipValidation() {
-	if(zip.validity.valid) {
-	   zipLabel.style.color = "#000";
-	} else {
-	   zipLabel.style.color = "#C21E1E";
-	}
+	zipLabel.style.color = zip.validity.valid ? noError : error;
 }
 
-// Validation error for cvv
+// Show validation error if cvv is not valid
 function cvvValidation() {
-	if(cvv.validity.valid) {
-	   cvvLabel.style.color = "#000";
-	} else {
-	   cvvLabel.style.color = "#C21E1E";
-	}
+	cvvLabel.style.color = cvv.validity.valid ? noError : error;
 }
 
 // Create a T-shirt Validation Label
 const tshirtLabel = document.createElement('label');
+tshirtLabel.className = "validation-error";
 tshirtLabel.textContent = "Don't forget to pick a T-shirt";
-tshirtLabel.style.color = "#C21E1E";
-tshirtLabel.style.fontSize = "1rem";
-tshirtLabel.style.fontWeight = "normal";
-tshirtLabel.style.margin = ".5em 0 0 0";
-tshirtLabel.style.display = "none";
 tshirtHeader.appendChild(tshirtLabel);
 
-// Verify a t-shirt is selected
+// Show validation error if a T-shirt is not selected
 function tshirtValidation() {
-	if (design.value !== "Select Theme") {
-		tshirtLabel.style.display = "none";
-	} else {
-		tshirtLabel.style.display = "block";
-	}
+	tshirtLabel.style.display = design.value !== "Select Theme" ? "none" : "block";
 }
 
 // Create an Activities Validation Label
 const activityLabel = document.createElement('label');
+activityLabel.className = "validation-error";
 activityLabel.textContent = "Please select an activity";
-activityLabel.style.color = "#C21E1E";
-activityLabel.style.fontSize = "1rem";
-activityLabel.style.fontWeight = "normal";
-activityLabel.style.margin = ".5em 0 0 0";
-activityLabel.style.display = "none";
 activityHeader.appendChild(activityLabel);
 
-// Verify an activity is selected
+// Show validation error if an activity is not selected
 function activityValidation() {
-	if (activityChecked()) {
-		activityLabel.style.display = "none";
-	} else {
-		activityLabel.style.display = "block";
-	}
+	activityLabel.style.display = activityChecked() ? "none" : "block";
 }
 
 // Create a Payment Validation Label
 const paymentLabel = document.createElement('label');
+paymentLabel.className = "validation-error";
 paymentLabel.textContent = "Please select a payment option";
-paymentLabel.style.color = "#C21E1E";
-paymentLabel.style.fontSize = "1rem";
-paymentLabel.style.fontWeight = "normal";
-paymentLabel.style.margin = ".5em 0 0 0";
-paymentLabel.style.display = "none";
 paymentHeader.appendChild(paymentLabel);
 
-// Verify a payment method is selected
+// // Show validation error if a payment method is not selected
 function paymentValidation() {
-	if (payment.value !== "select_method") {
-		paymentLabel.style.display = "none";
-	} else {
-		paymentLabel.style.display = "block";
-	}
+	paymentLabel.style.display = payment.value !== "select_method" ? "none" : "block";
 }
