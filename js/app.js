@@ -174,7 +174,7 @@ showPaymentInfo("block", "none", "none");
 
 // Detect changes in the payment options
 payment.addEventListener("change", () => {
-	// Show payment section based on input value
+	// Set payment section based on input value
 	setPaymentInfo();
 	
 	// Disable credit card validation when credit card is not selected
@@ -216,13 +216,17 @@ function isChecked() {
 	return checked;
 }
 
-// Form event handler for form validation
+// Stop form submission if any errors
 form.addEventListener("submit", (event) => {
-	if(!isChecked()) {
-		console.log("Nothing was checked!");
-		event.preventDefault();
+	if(!isChecked() || !name.validity.valid || !email.validity.valid ||
+	   !ccNum.validity.valid || !zip.validity.valid || !cvv.validity.valid ) {
+			event.preventDefault();
 	}
 }, false);
 
 
 // Form validation messages
+
+// Disable default form validation
+form.noValidate = true;
+
