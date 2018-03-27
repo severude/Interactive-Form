@@ -17,7 +17,14 @@ const ccNum = document.getElementById("cc-num");
 const zip = document.getElementById("zip");
 const cvv = document.getElementById("cvv");
 const form  = document.getElementsByTagName('form')[0];
-
+const nameLabel = document.getElementsByTagName('label')[0];
+const emailLabel = document.getElementsByTagName('label')[1];
+const ccNumLabel = document.getElementsByTagName('label')[14];
+const zipLabel = document.getElementsByTagName('label')[15];
+const cvvLabel = document.getElementsByTagName('label')[16];
+const tshirtHeader = document.getElementsByTagName('legend')[1];
+const activityHeader = document.getElementsByTagName('legend')[2];
+const paymentHeader = document.getElementsByTagName('legend')[3];
 
 // Set focus on the first text field
 name.focus();
@@ -35,7 +42,7 @@ fieldSetOne.appendChild(otherTitle);
 
 // View otherTitle when Other is selected, otherwise hide it
 userTitle.addEventListener("change", () => {
-	if(userTitle.value.toLowerCase() == "other") {
+	if(userTitle.value === "other") {
 		otherTitle.style.display = "block";
 	} else {
 		otherTitle.style.display = "none";
@@ -60,12 +67,12 @@ function disableColors() {
 
 // Select color options based on input value
 function selectOptions() {
-	if(design.value == "js puns") {
+	if(design.value === "js puns") {
 		color.selectedIndex = 1;
 		colors[1].style.display = "block";
 		colors[2].style.display = "block";
 		colors[3].style.display = "block";
-	} else if(design.value == "heart js") {
+	} else if(design.value === "heart js") {
 		color.selectedIndex = 4;
 		colors[4].style.display = "block";
 		colors[5].style.display = "block";
@@ -157,11 +164,11 @@ function showPaymentInfo(displayCreditCard, displayPayPal, displayBitCoin) {
 
 // Turn on and off payments sections based on the selection
 function setPaymentInfo() {
-	if(payment.value.toLowerCase() == "credit card") {
+	if(payment.value === "credit card") {
 		showPaymentInfo("block", "none", "none");
-	} else if(payment.value.toLowerCase() == "paypal") {
+	} else if(payment.value === "paypal") {
 		showPaymentInfo("none", "block", "none");
-	} else if(payment.value.toLowerCase() == "bitcoin") {
+	} else if(payment.value === "bitcoin") {
 		showPaymentInfo("none", "none", "block");
 	} else {
 		showPaymentInfo("none", "none", "none");
@@ -178,8 +185,10 @@ payment.addEventListener("change", () => {
 	setPaymentInfo();
 	
 	// Disable credit card validation when credit card is not selected
-	if(payment.value.toLowerCase() != "credit card") {
+	if(payment.value !== "credit card") {
 		disableCreditCardValidation();
+	} else {
+		enableCreditCardValidation();
 	}
 });
 
@@ -188,15 +197,22 @@ payment.addEventListener("change", () => {
 
 // Form validation requirements
 name.required = true;
-name.pattern = "[A-Za-z]+";
 email.required = true;
+enableCreditCardValidation();
+
+// Validation patterns
+name.pattern = "[A-Za-z]+";
 email.pattern = "[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*";
-ccNum.required = true;
 ccNum.pattern = "[0-9]{13,16}";
-zip.required = true;
 zip.pattern = "[0-9]{5}";
-cvv.required = true;
 cvv.pattern = "[0-9]{3}";
+
+// If payment type is a credit card, then these validators are required
+function enableCreditCardValidation() {
+	ccNum.required = true;
+	zip.required = true;
+	cvv.required = true;
+}
 
 // If payment type is not a credit card, then turn these validators off
 function disableCreditCardValidation() {
@@ -205,8 +221,8 @@ function disableCreditCardValidation() {
 	cvv.required = false;
 }
 
-// Returns true if any checkbox is checked
-function isChecked() {
+// Returns true if any activity checkbox is checked
+function activityChecked() {
 	let checked = false;
 	for(let index = 0; index < checkboxes.length; index++) {
 		if(checkboxes[index].checked) {
@@ -216,17 +232,135 @@ function isChecked() {
 	return checked;
 }
 
-// Stop form submission if any errors
+// Make sure everything is valid when submit button is pressed
 form.addEventListener("submit", (event) => {
-	if(!isChecked() || !name.validity.valid || !email.validity.valid ||
+	// Test every field for correct validation
+	if(!name.validity.valid || !email.validity.valid || !activityChecked() ||
+	   design.value === "Select Theme" || payment.value === "select_method" ||
 	   !ccNum.validity.valid || !zip.validity.valid || !cvv.validity.valid ) {
+			// Show stopper if you get here, stop the form submission
 			event.preventDefault();
+		
+			// Show all fields which have validation errors	
+			nameValidation();
+			emailValidation();
+			tshirtValidation();
+			activityValidation();
+			paymentValidation();
+			ccNumValidation();
+			zipValidation();
+			cvvValidation();
 	}
 }, false);
 
 
 // Form validation messages
 
-// Disable default form validation
+// Disable default form messages to use custom validation
 form.noValidate = true;
 
+// Validation error for name
+function nameValidation() {
+	if(name.validity.valid) {
+	   nameLabel.textContent = "Name:";
+	   nameLabel.style.color = "#000";
+	} else {
+	   nameLabel.textContent = "Name: (Please provide your name)";
+	   nameLabel.style.color = "#C21E1E";
+	}
+}
+
+// Validation error for email
+function emailValidation() {
+	if(email.validity.valid) {
+	   emailLabel.textContent = "Email:";
+	   emailLabel.style.color = "#000";
+	} else {
+	   emailLabel.textContent = "Email: (Please provide a valid email address)";
+	   emailLabel.style.color = "#C21E1E";
+	}
+}
+
+// Validation error for credit card number
+function ccNumValidation() {
+	if(ccNum.validity.valid) {
+	   ccNumLabel.style.color = "#000";
+	} else {
+	   ccNumLabel.style.color = "#C21E1E";
+	}
+}
+
+// Validation error for zip code
+function zipValidation() {
+	if(zip.validity.valid) {
+	   zipLabel.style.color = "#000";
+	} else {
+	   zipLabel.style.color = "#C21E1E";
+	}
+}
+
+// Validation error for cvv
+function cvvValidation() {
+	if(cvv.validity.valid) {
+	   cvvLabel.style.color = "#000";
+	} else {
+	   cvvLabel.style.color = "#C21E1E";
+	}
+}
+
+// Create a T-shirt Validation Label
+const tshirtLabel = document.createElement('label');
+tshirtLabel.textContent = "Don't forget to pick a T-shirt";
+tshirtLabel.style.color = "#C21E1E";
+tshirtLabel.style.fontSize = "1rem";
+tshirtLabel.style.fontWeight = "normal";
+tshirtLabel.style.margin = ".5em 0 0 0";
+tshirtLabel.style.display = "none";
+tshirtHeader.appendChild(tshirtLabel);
+
+// Verify a t-shirt is selected
+function tshirtValidation() {
+	if (design.value !== "Select Theme") {
+		tshirtLabel.style.display = "none";
+	} else {
+		tshirtLabel.style.display = "block";
+	}
+}
+
+// Create an Activities Validation Label
+const activityLabel = document.createElement('label');
+activityLabel.textContent = "Please select an activity";
+activityLabel.style.color = "#C21E1E";
+activityLabel.style.fontSize = "1rem";
+activityLabel.style.fontWeight = "normal";
+activityLabel.style.margin = ".5em 0 0 0";
+activityLabel.style.display = "none";
+activityHeader.appendChild(activityLabel);
+
+// Verify an activity is selected
+function activityValidation() {
+	if (activityChecked()) {
+		activityLabel.style.display = "none";
+	} else {
+		activityLabel.style.display = "block";
+	}
+}
+
+// Create a Payment Validation Label
+const paymentLabel = document.createElement('label');
+paymentLabel.textContent = "Please select a payment option";
+paymentLabel.style.color = "#C21E1E";
+paymentLabel.style.fontSize = "1rem";
+paymentLabel.style.fontWeight = "normal";
+paymentLabel.style.margin = ".5em 0 0 0";
+paymentLabel.style.display = "none";
+paymentHeader.appendChild(paymentLabel);
+
+// Verify a payment method is selected
+function paymentValidation() {
+	if (payment.value !== "select_method") {
+		paymentLabel.style.display = "none";
+	} else {
+		paymentLabel.style.display = "block";
+	}
+}
