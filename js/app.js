@@ -25,6 +25,8 @@ const cvvLabel = document.getElementsByTagName('label')[16];
 const tshirtHeader = document.getElementsByTagName('legend')[1];
 const activityHeader = document.getElementsByTagName('legend')[2];
 const paymentHeader = document.getElementsByTagName('legend')[3];
+const colorOptions = document.getElementById("colors-js-puns");
+
 
 // Set focus on the first text field
 name.focus();
@@ -82,12 +84,20 @@ function selectOptions() {
 	}
 }
 
+// Hide option colors if no design is selected
+function showColorOptions() {
+	colorOptions.style.display = design.value === "Select Theme" ? "none" : "block";
+}
+
+// Run these on page load
 disableColors();
+showColorOptions();
 
 // Show color options based on which design is selected
 design.addEventListener("change", () => {
 	disableColors();  // Disable all colors
 	selectOptions();  // Turn on any available colors
+	showColorOptions();  // Hide color options if no design is selected
 });
 
 
