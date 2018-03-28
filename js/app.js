@@ -19,13 +19,13 @@ const cvv = document.getElementById("cvv");
 const form  = document.getElementsByTagName('form')[0];
 const nameLabel = document.getElementsByTagName('label')[0];
 const emailLabel = document.getElementsByTagName('label')[1];
-const ccNumLabel = document.getElementsByTagName('label')[14];
-const zipLabel = document.getElementsByTagName('label')[15];
-const cvvLabel = document.getElementsByTagName('label')[16];
 const tshirtHeader = document.getElementsByTagName('legend')[1];
 const activityHeader = document.getElementsByTagName('legend')[2];
 const paymentHeader = document.getElementsByTagName('legend')[3];
 const colorOptions = document.getElementById("colors-js-puns");
+const ccDiv = creditCard.children[0];
+const zipDiv = creditCard.children[1];
+const cvvDiv = creditCard.children[2];
 
 
 // Set focus on the first text field
@@ -85,19 +85,19 @@ function selectOptions() {
 }
 
 // Hide option colors if no design is selected
-function showColorOptions() {
+function hideColorOptions() {
 	colorOptions.style.display = design.value === "Select Theme" ? "none" : "block";
 }
 
 // Run these on page load
 disableColors();
-showColorOptions();
+hideColorOptions();
 
 // Show color options based on which design is selected
 design.addEventListener("change", () => {
 	disableColors();  // Disable all colors
 	selectOptions();  // Turn on any available colors
-	showColorOptions();  // Hide color options if no design is selected
+	hideColorOptions();  // Hide color options if no design is selected
 });
 
 
@@ -151,7 +151,7 @@ function getTotalAmount() {
 }
 
 // Moniter all checkbox statuses whenever a change occurs in activities
-activities.addEventListener("change", event => {
+activities.addEventListener("change", () => {
 	// Check for and disable any activities that overlap
 	disableCheckBox(1, 3);
 	disableCheckBox(3, 1);
@@ -242,13 +242,34 @@ function activityChecked() {
 	return checked;
 }
 
+// Create a Credit Card Validation Label
+const creditCardLabel = document.createElement('label');
+creditCardLabel.className = "validation-message";
+ccDiv.appendChild(creditCardLabel);
+
+// Create a Zip Code Validation Label
+const zipCodeLabel = document.createElement('label');
+zipCodeLabel.className = "validation-message";
+zipDiv.appendChild(zipCodeLabel);
+
+// Create a Cvv Number Validation Label
+const cvvNumLabel = document.createElement('label');
+cvvNumLabel.className = "validation-message";
+cvvDiv.appendChild(cvvNumLabel);
+
+// Hidden border underneath validation labels to prevent content overflow
+const hr = document.createElement('hr');
+hr.style.width = "100%";
+hr.style.border = "none";
+creditCard.insertBefore(hr, creditCard.children[3]);
+
 // Make sure everything is valid when submit button is pressed
 form.addEventListener("submit", (event) => {
 	// Test every field for correct validation
 	if(!name.validity.valid || !email.validity.valid || !activityChecked() ||
 	   design.value === "Select Theme" || payment.value === "select_method" ||
 	   !ccNum.validity.valid || !zip.validity.valid || !cvv.validity.valid ) {
-			// Show stopper if you get here, stop the form submission
+			// Stop the form submission
 			event.preventDefault();
 		
 			// Show all fields which have validation errors	
@@ -273,7 +294,7 @@ form.noValidate = true;
 const noError = "#000";
 const error = "#C21E1E";
 
-// Validation error for name
+// Show validation error if name is not entered
 function nameValidation() {
 	if(name.validity.valid) {
 	   nameLabel.textContent = "Name:";
@@ -284,7 +305,7 @@ function nameValidation() {
 	}
 }
 
-// Validation error for email
+// Show validation error if email is not valid
 function emailValidation() {
 	if(email.validity.valid) {
 	   emailLabel.textContent = "Email:";
@@ -297,17 +318,32 @@ function emailValidation() {
 
 // Show validation error if credit card number is not valid
 function ccNumValidation() {
-	ccNumLabel.style.color = ccNum.validity.valid ? noError : error;
+	creditCardLabel.style.display = ccNum.validity.valid ? "none" : "block";
+	if(ccNum.value.length === 0) {
+		creditCardLabel.textContent = "Please enter a credit card number";
+	} else {
+		creditCardLabel.textContent = "Please enter a number that is between 13 and 16 digits long";
+	}
 }
 
 // Show validation error if zip code is not valid
 function zipValidation() {
-	zipLabel.style.color = zip.validity.valid ? noError : error;
+	zipCodeLabel.style.display = zip.validity.valid ? "none" : "block";
+	if(zip.value.length === 0) {
+		zipCodeLabel.textContent = "Please enter a zip code number";
+	} else {
+		zipCodeLabel.textContent = "Please enter a number exactly 5 digits long";
+	}
 }
 
 // Show validation error if cvv is not valid
 function cvvValidation() {
-	cvvLabel.style.color = cvv.validity.valid ? noError : error;
+	cvvNumLabel.style.display = cvv.validity.valid ? "none" : "block";
+	if(cvv.value.length === 0) {
+		cvvNumLabel.textContent = "Please enter a cvv number";
+	} else {
+		cvvNumLabel.textContent = "Please enter a number exactly 3 digits long";
+	}
 }
 
 // Create a T-shirt Validation Label
@@ -342,3 +378,32 @@ paymentHeader.appendChild(paymentLabel);
 function paymentValidation() {
 	paymentLabel.style.display = payment.value !== "select_method" ? "none" : "block";
 }
+
+
+// Real time validation
+
+// Event listeners to provide real time validation
+name.addEventListener("keyup", () => {
+	nameValidation();
+});
+email.addEventListener("keyup", () => {
+	emailValidation();
+});
+design.addEventListener("change", () => {
+	tshirtValidation();
+});
+activities.addEventListener("change", () => {
+	activityValidation();
+});
+payment.addEventListener("change", () => {
+	paymentValidation();
+});
+ccDiv.addEventListener("keyup", () => {
+	ccNumValidation();
+});
+zipDiv.addEventListener("keyup", () => {
+	zipValidation();
+});
+cvvDiv.addEventListener("keyup", () => {
+	cvvValidation();
+});
