@@ -2,8 +2,8 @@
 
 // Element selectors
 const name = document.getElementById("name");
-const fieldSetOne = document.getElementsByTagName('fieldset')[0];
 const userTitle = document.getElementById("title");
+const otherTitle = document.getElementById("other-title");
 const color = document.getElementById("color");
 const colors = color.getElementsByTagName("option");
 const design = document.getElementById("design");
@@ -34,13 +34,8 @@ name.focus();
 
 // ”Job Role” section of the form
 
-// Create an input for Other Job Role
-const otherTitle = document.createElement('input');
-otherTitle.id = "other-title";
-otherTitle.type = "text";
-otherTitle.placeholder="Your Job Role";
+// Turn off the other title
 otherTitle.style.display = "none";
-fieldSetOne.appendChild(otherTitle);
 
 // View otherTitle when Other is selected, otherwise hide it
 userTitle.addEventListener("change", () => {
