@@ -206,7 +206,7 @@ email.required = true;
 enableCreditCardValidation();
 
 // Validation patterns
-name.pattern = "[A-Za-z]+";
+name.pattern = "[A-Za-z ]+";
 email.pattern = "[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*";
 ccNum.pattern = "[0-9]{13,16}";
 zip.pattern = "[0-9]{5}";
